@@ -1,0 +1,40 @@
+import com.dao.Bookdao;
+import com.daoimpl.Bookdaoimpl;
+import com.models.Books;
+
+public class Accessbook {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+Bookdao bookdao=new Bookdaoimpl();
+for(Books b:bookdao.getAllBooks()){
+	System.out.println("BOOK NAME:"+b.getName());
+	System.out.println("BOOK ID:"+b.getId());
+}
+
+//update
+Books book=bookdao.getAllBooks().get(2);
+book.setName("Cryptography");
+System.out.println("********DS book changed to cryptography************");
+// saving
+//bookdao.savebook(book);
+
+//delete book
+System.out.println("***********middle book got deleted*****************");
+	Books book2=bookdao.getAllBooks().get(1);
+	bookdao.deletebook(book2);
+	for(Books book1:bookdao.getAllBooks()){
+		System.out.println("Bookname:"+book1.getName());
+		
+		
+	}
+	
+	System.out.println("*******book having index 113************");
+	Books b3=bookdao.getBooksById(113);
+	System.out.println(" "+b3.getName());
+
+
+
+	}
+
+}

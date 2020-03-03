@@ -1,0 +1,108 @@
+package com.intro2;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class loginservlet
+ */
+@WebServlet("/loginservlet")
+public class loginservlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public loginservlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	
+	
+	//database class.................
+	
+	
+	protected boolean getDetails(String username, String userpass) {
+		boolean checker = false; 
+		Connection con = null;
+		PreparedStatement pre = null;
+		try {
+			String url = "jdbc:mysql://localhost:3306/userreg";
+			String user = "root";
+			String password = "pranamam@NSS15";
+			
+			String sql = "select username,userpass from userreg1 where username=? and userpass=?";
+			//loading drivers
+			Class.forName("com.mysql.cj.jdbc.Driver");
+			//creating connection
+			con = DriverManager.getConnection(url, user, password);
+			
+			pre = con.prepareStatement(sql);
+			
+			pre.setString(1, username);
+			pre.setString(2, userpass);
+			
+			ResultSet re = pre.executeQuery();
+			
+			if(re.next() != false) {
+				checker = true;
+			}
+			else
+				checker = false;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				pre.close();
+				con.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return checker;
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		RequestDispatcher rd = null;
+		PrintWriter write = response.getWriter();
+		
+		String username = request.getParameter("text1");
+		String userpass = request.getParameter("text2");
+		
+		boolean getvalue = getDetails(username,userpass); 
+		if(getvalue) {
+			rd = request.getRequestDispatcher("/welcomeservlet");
+			rd.forward(request, response);
+		}
+		else {
+			rd = request.getRequestDispatcher("login.html");
+			write.println("Sorry  Your  " + username + "  and  Password  were  wrong") ;
+			rd.include(request, response);
+		}
+	}
+
+}
